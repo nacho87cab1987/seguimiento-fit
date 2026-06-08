@@ -212,6 +212,25 @@ const PROGRAMAS = {
     ],
     nota: "Hacelo en circuito: un ejercicio tras otro con 30–45 s de pausa, y al terminar la vuelta descansás 1–2 min. Hacé 2–3 vueltas según el tiempo. Sirve igual en gym o en casa adaptando el peso. Alterná día A y B.",
   },
+  "Calistenia · principiante": {
+    dias: [
+      { nombre: "Día A · Full body", pausa: "Pausa 60–90 s entre series", ejercicios: [
+        ["Sentadilla a la silla (box squat)", "3×12"],
+        ["Flexiones inclinadas (manos en mesa)", "3×10"],
+        ["Remo invertido bajo una mesa", "3×8"],
+        ["Puente de glúteos", "3×15"],
+        ["Plancha frontal", "3× 20–30 s"],
+      ]},
+      { nombre: "Día B · Full body", pausa: "Pausa 60–90 s entre series", ejercicios: [
+        ["Zancadas caminando", "3×10 c/pierna"],
+        ["Flexiones (de rodillas si hace falta)", "3×8"],
+        ["Remo a 1 brazo con mochila", "3×12 c/lado"],
+        ["Elevación de talones", "3×20"],
+        ["Plancha lateral", "3× 20 s c/lado"],
+      ]},
+    ],
+    nota: "Para arrancar: 2–3 veces por semana en días no seguidos (ej: lunes/miércoles/viernes), alternando A y B. Empezá por la variante MÁS FÁCIL de cada ejercicio (tocá el nombre para verla) y subí cuando te salga prolijo. Progresá primero sumando repeticiones y después pasando a la versión más difícil. 5 min de movilidad antes de empezar.",
+  },
 };
 
 const CALENTAMIENTO = "Antes de entrenar: 3 series de 12–20 rep (o 1 min de plancha) de ejercicios de core como entrada en calor.";
@@ -297,6 +316,44 @@ const ytURL = (name) =>
 const imgURL = (name) =>
   "https://www.google.com/search?tbm=isch&q=" +
   encodeURIComponent(name.replace(/\s*\(.*?\)\s*/g, " ").trim() + " ejercicio técnica");
+
+// Variantes más fácil / más difícil para ejercicios de peso corporal (calistenia)
+const VARIANTES = [
+  ["flexiones diamante", { f: "Flexiones normales o de rodillas.", d: "Pies elevados en una silla." }],
+  ["flexiones inclinadas", { f: "Cuanto más alta la superficie (pared), más fácil.", d: "Bajá la altura, hasta llegar al piso." }],
+  ["flexiones declinadas", { f: "Flexiones normales, con los pies en el piso.", d: "Pies más altos o bajada más lenta." }],
+  ["pike push", { f: "Manos más adelante (posición menos vertical).", d: "Pies sobre una silla (más vertical)." }],
+  ["flexiones", { f: "Apoyá las rodillas, o con las manos en una mesa.", d: "Pies sobre una silla, o bajá más lento." }],
+  ["press de piso", { f: "Usá botellas más livianas.", d: "Más peso o bajá más lento." }],
+  ["press de hombros", { f: "Botellas más livianas.", d: "Más peso o pausa arriba." }],
+  ["fondos de tríceps", { f: "Rodillas flexionadas, pies cerca.", d: "Pies estirados o elevados en otra silla." }],
+  ["remo invertido", { f: "Cuerpo más parado (mesa o barra más alta).", d: "Cuerpo más horizontal o pies elevados." }],
+  ["remo a 1 brazo", { f: "Menos peso en la mochila.", d: "Más peso o pausa de 1 s arriba." }],
+  ["remo con toalla", { f: "Cuerpo más parado.", d: "Más inclinado hacia atrás." }],
+  ["superman", { f: "Levantá solo los brazos o solo las piernas.", d: "Todo junto con pausa de 2 s arriba." }],
+  ["pull-over", { f: "Botella más liviana.", d: "Más peso o más lento." }],
+  ["curl", { f: "Botellas más livianas.", d: "Más peso o pausa arriba." }],
+  ["sentadilla búlgara", { f: "Sentadilla normal a dos piernas.", d: "Sumá una mochila con peso." }],
+  ["sentadilla isométrica", { f: "Menos profundidad o menos tiempo.", d: "Más tiempo, o aguantá en una pierna." }],
+  ["sentadilla goblet", { f: "Sentadilla sin peso, bajando a una silla.", d: "Más peso o bajá más lento." }],
+  ["sentadilla", { f: "Bajá a tocar una silla (box squat).", d: "Con peso, o a una pierna." }],
+  ["zancadas", { f: "Pasos más cortos y sin peso.", d: "Con mochila, o en salto." }],
+  ["puente de glúteos", { f: "Con las dos piernas a la vez.", d: "A una pierna o con los pies elevados." }],
+  ["hip thrust", { f: "Sin peso, dos piernas.", d: "Más peso o pausa de 2 s arriba." }],
+  ["peso muerto rumano", { f: "Sin peso, aprendé el movimiento.", d: "Más peso, o a una pierna." }],
+  ["elevación de talones", { f: "En el piso, con los dos pies.", d: "En un escalón y a una pierna." }],
+  ["vuelo", { f: "Botellas más livianas.", d: "Más peso o más lento." }],
+  ["plancha frontal", { f: "Apoyá las rodillas, o menos tiempo.", d: "Más tiempo, o levantá un pie." }],
+  ["plancha lateral", { f: "Apoyá la rodilla de abajo.", d: "Más tiempo, o levantá la pierna de arriba." }],
+  ["plancha", { f: "Apoyá las rodillas.", d: "Más tiempo, o sacá un punto de apoyo." }],
+  ["mountain climbers", { f: "Hacelo más lento.", d: "Más rápido o más tiempo." }],
+  ["dominadas", { f: "Negativas (subido, bajás lento) o asistidas con una banda.", d: "Más repeticiones o más lento." }],
+];
+function getVar(name) {
+  const n = name.toLowerCase();
+  for (const [k, v] of VARIANTES) if (n.includes(k)) return v;
+  return null;
+}
 
 const ITEMS_DIA = [
   { k: "desayuno", label: "Desayuno", icon: Coffee },
@@ -560,6 +617,12 @@ const CSS = `
 .cf-exinfo { padding: 2px 4px 13px 35px; }
 .cf-exinfo p { font-size: 12.5px; color: #b9c2d2; line-height: 1.5; margin-bottom: 10px; }
 .cf-exlinks { display: flex; gap: 8px; flex-wrap: wrap; }
+.cf-var { display: flex; flex-direction: column; gap: 7px; margin-bottom: 11px; }
+.cf-var > div { font-size: 12px; color: #b9c2d2; line-height: 1.45; }
+.cf-vt { display: inline-block; font-size: 9.5px; font-weight: 800; text-transform: uppercase;
+  letter-spacing: .06em; padding: 2px 7px; border-radius: 6px; margin-right: 7px; vertical-align: middle; }
+.cf-vt.facil { color: var(--teal); background: rgba(31,224,196,.12); }
+.cf-vt.dificil { color: var(--pink); background: rgba(255,77,141,.12); }
 .cf-ytlink { display: inline-flex; align-items: center; gap: 7px; font-size: 12.5px; font-weight: 800;
   color: var(--teal); text-decoration: none; background: rgba(31,224,196,.1);
   border: 1px solid rgba(31,224,196,.3); padding: 8px 13px; border-radius: 10px; }
@@ -1193,13 +1256,14 @@ function RestTimer() {
 
 function Entreno({ workouts, setWorkouts, persist }) {
   const progKeys = Object.keys(PROGRAMAS);
-  const gymKeys = progKeys.filter((k) => !/^(Casa|Exprés)/.test(k));
+  const gymKeys = progKeys.filter((k) => !/^(Casa|Exprés|Calistenia)/.test(k));
   const [prog, setProg] = useState(gymKeys[gymKeys.length - 1] || progKeys[0]);
   const [diaIdx, setDiaIdx] = useState(0);
   const [abierto, setAbierto] = useState(null);
 
   const programa = PROGRAMAS[prog];
   const dia = programa.dias[diaIdx];
+  const esBW = /^(Casa|Exprés|Calistenia)/.test(prog);
   const iso = hoyISO();
   const woHoy = workouts[iso] || {};
   const matchEste = woHoy.prog === prog && woHoy.dia === dia.nombre;
@@ -1237,6 +1301,7 @@ function Entreno({ workouts, setWorkouts, persist }) {
         {dia.ejercicios.map(([nm, rp], i) => {
           const st = ejState[i] || {};
           const cue = getCue(nm);
+          const v = esBW ? getVar(nm) : null;
           const open = abierto === i;
           return (
             <div key={i}>
@@ -1257,6 +1322,12 @@ function Entreno({ workouts, setWorkouts, persist }) {
               {open && (
                 <div className="cf-exinfo">
                   {cue && <p>{cue}</p>}
+                  {v && (
+                    <div className="cf-var">
+                      <div><span className="cf-vt facil">Más fácil</span>{v.f}</div>
+                      <div><span className="cf-vt dificil">Más difícil</span>{v.d}</div>
+                    </div>
+                  )}
                   <div className="cf-exlinks">
                     <a className="cf-ytlink" href={imgURL(nm)} target="_blank" rel="noopener noreferrer">
                       <ImageIcon size={15} /> Ver fotos
