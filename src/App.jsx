@@ -1555,18 +1555,26 @@ function Fotos({ fotos, setFotos, persist }) {
   }, [fotos]);
 
   const onFile = async (e) => {
-    const file = e.target.files && e.target.files[0];
-    if (!file) return;
+    const files = e.target.files ? Array.from(e.target.files) : [];
+    if (!files.length) return;
     setSubiendo(true);
     try {
-      const src = await comprimir(file);
-      const id = String(Date.now());
       const date = hoyISO();
-      await saveKey("cf:foto:" + id, src);
-      setImgs((m) => ({ ...m, [id]: src }));
-      const next = [...fotos, { id, date }].sort((a, b) =>
-        a.date.localeCompare(b.date) || a.id.localeCompare(b.id));
-      setFotos(next); persist("cf:fotos", next);
+      const nuevos = [];
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        if (!file.type || !file.type.startsWith("image/")) continue;
+        const src = await comprimir(file);
+        const id = String(Date.now()) + "-" + i;
+        await saveKey("cf:foto:" + id, src);
+        setImgs((m) => ({ ...m, [id]: src }));
+        nuevos.push({ id, date });
+      }
+      if (nuevos.length) {
+        const next = [...fotos, ...nuevos].sort((a, b) =>
+          a.date.localeCompare(b.date) || a.id.localeCompare(b.id));
+        setFotos(next); persist("cf:fotos", next);
+      }
     } catch { /* archivo no válido */ }
     setSubiendo(false);
     e.target.value = "";
@@ -1639,14 +1647,15 @@ function Fotos({ fotos, setFotos, persist }) {
       <div className="cf-card">
         <div className="cf-card-h"><Camera size={18} /> Fotos de progreso</div>
         <div className="cf-sub" style={{ marginBottom: 14 }}>
-          Sacate una foto cada 1–2 semanas, siempre con luz, ángulo y pose parecidos. Después tocá dos para compararlas.
+          Subí una o varias fotos de la galería (o sacá una con la cámara). Para que la comparación sirva,
+          usá siempre luz, ángulo y pose parecidos. Tocá dos fotos para compararlas.
         </div>
         <div className="cf-upload">
-          <input ref={fileRef} type="file" accept="image/*" capture="environment"
+          <input ref={fileRef} type="file" accept="image/*" multiple
             onChange={onFile} style={{ display: "none" }} />
           <button className="cf-btn" onClick={() => fileRef.current && fileRef.current.click()} disabled={subiendo}>
-            {subiendo ? <Loader size={17} className="cf-spin" /> : <Camera size={17} />}
-            {subiendo ? "Procesando…" : "Sacar / subir foto"}
+            {subiendo ? <Loader size={17} className="cf-spin" /> : <ImageIcon size={17} />}
+            {subiendo ? "Procesando…" : "Agregar fotos"}
           </button>
         </div>
 
